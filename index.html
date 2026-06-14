@@ -63,22 +63,6 @@
   .btn-red { border-color: #e05a5a55; color: var(--red); }
   .btn-red:hover { background: #e05a5a22; }
 
-  /* ── AI Panel ── */
-  #ai-panel {
-    background: var(--card); border-bottom: 1px solid var(--border);
-    padding: 14px 20px; display: none; gap: 12px; align-items: flex-end;
-    animation: slideDown 0.2s ease;
-  }
-  #ai-panel.open { display: flex; }
-  #ai-panel textarea {
-    flex: 1; background: var(--surface); border: 1px solid var(--border2);
-    color: var(--text); border-radius: 8px; padding: 10px 12px;
-    font-size: 13px; font-family: inherit; outline: none; resize: vertical;
-    min-height: 64px;
-  }
-  #ai-panel textarea:focus { border-color: var(--accent); }
-  #ai-panel .ai-btns { display: flex; flex-direction: column; gap: 6px; }
-
   /* ── Main ── */
   #main { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
 
@@ -170,25 +154,11 @@
   #toast.error { background: var(--red); }
 
   /* ── Animations ── */
-  @keyframes slideDown { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:none } }
   @keyframes fadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:none } }
 
   /* ── Toolbar separator ── */
   .sep { width: 1px; background: var(--border); height: 20px; flex-shrink: 0; }
 
-  /* ── Loading overlay ── */
-  #loading {
-    position: fixed; inset: 0; background: #0d111799;
-    display: none; align-items: center; justify-content: center;
-    z-index: 500; font-size: 15px; color: var(--accent); font-weight: 600;
-  }
-  #loading.show { display: flex; }
-  .spinner {
-    width: 22px; height: 22px; border: 3px solid var(--border2);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.7s linear infinite; margin-right: 10px;
-  }
-  @keyframes spin { to { transform: rotate(360deg) } }
 </style>
 </head>
 <body>
@@ -200,22 +170,11 @@
     <div class="subtitle">工作分解結構 · 離線版</div>
   </div>
   <div id="header-actions">
-    <button class="btn btn-accent" onclick="toggleAI()">✦ AI 生成</button>
-    <div class="sep"></div>
     <button class="btn btn-green" onclick="addRoot()">＋ 新增群組</button>
     <div class="sep"></div>
     <button class="btn btn-muted" onclick="exportCSV()">⬇ CSV/Excel</button>
     <button class="btn btn-muted" onclick="exportJSON()">⬇ JSON</button>
     <button class="btn btn-muted" onclick="importJSON()">⬆ 匯入</button>
-  </div>
-</div>
-
-<!-- AI Panel -->
-<div id="ai-panel">
-  <textarea id="ai-prompt" rows="3" placeholder="描述你的專案，例如：「開發電商平台，包含前台購物、後台管理、金流串接、部署上線」&#10;AI 將自動產生 WBS 樹狀結構（需要連線）"></textarea>
-  <div class="ai-btns">
-    <button class="btn btn-accent" onclick="runAI()">產生 WBS</button>
-    <button class="btn btn-muted" onclick="toggleAI()">取消</button>
   </div>
 </div>
 
@@ -231,9 +190,6 @@
 
 <!-- Toast -->
 <div id="toast"></div>
-
-<!-- Loading -->
-<div id="loading"><div class="spinner"></div>AI 產生中…</div>
 
 <!-- Hidden file input for import -->
 <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleImport(event)">
@@ -499,47 +455,6 @@ function deleteNode(id) {
   const [nt] = removeNode(tree, id);
   tree = nt;
   render();
-}
-
-// ── AI ──
-function toggleAI() {
-  const panel = document.getElementById('ai-panel');
-  panel.classList.toggle('open');
-}
-
-async function runAI() {
-  const prompt = document.getElementById('ai-prompt').value.trim();
-  if (!prompt) return;
-  document.getElementById('loading').classList.add('show');
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{
-          role: 'user',
-          content: `你是專案管理助手，根據以下描述產生 WBS 結構，只回傳 JSON 陣列，不加任何說明或 markdown 包裝，格式：
-[{"title":"...","children":[{"title":"...","children":[]},...]},...]
-
-專案描述：${prompt}`
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content?.[0]?.text || '[]').replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(text);
-    tree = injectIds(parsed);
-    collapsed = {};
-    document.getElementById('ai-panel').classList.remove('open');
-    document.getElementById('ai-prompt').value = '';
-    render();
-    showToast('AI 已產生 WBS 結構 ✓');
-  } catch(e) {
-    showToast('AI 產生失敗：' + e.message, true);
-  }
-  document.getElementById('loading').classList.remove('show');
 }
 
 function injectIds(nodes, level=0) {
