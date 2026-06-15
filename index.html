@@ -115,6 +115,24 @@
     white-space: nowrap; min-width: 60px;
   }
 
+  .node-meta {
+    display: flex; gap: 4px; align-items: center; flex-shrink: 0;
+  }
+  .meta-field {
+    font-size: 11px; color: var(--muted2);
+    border: 1px solid transparent; border-radius: 4px;
+    padding: 2px 7px; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.12s; min-width: 48px; text-align: center;
+  }
+  .meta-field:hover { border-color: var(--border2); }
+  .meta-field.empty { color: var(--muted); }
+  .meta-field input {
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-size: 11px; font-family: inherit;
+    width: 90px; text-align: center;
+  }
+  .meta-sep { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+
   .node-actions {
     display: flex; gap: 3px; opacity: 0; transition: opacity 0.15s;
   }
@@ -444,6 +462,13 @@ function updateNodeTitle(nodes, id, title) {
   });
 }
 
+function updateNodeField(nodes, id, field, value) {
+  return nodes.map(n => {
+    if (n.id === id) return { ...n, [field]: value };
+    return { ...n, children: updateNodeField(n.children, id, field, value) };
+  });
+}
+
 // ── Render ──
 function render() {
   const nums = numbering(tree);
@@ -493,6 +518,29 @@ function render() {
       title.title = '雙擊編輯';
       title.ondblclick = e => { e.stopPropagation(); startEdit(node.id, title); };
       row.appendChild(title);
+
+      // Meta fields (時間起訖 + 負責人)
+      const meta = document.createElement('div');
+      meta.className = 'node-meta';
+
+      const mkMeta = (field, placeholder, width) => {
+        const el = document.createElement('span');
+        el.className = 'meta-field' + (node[field] ? '' : ' empty');
+        el.textContent = node[field] || placeholder;
+        el.style.minWidth = width;
+        el.onclick = e => { e.stopPropagation(); startMetaEdit(node.id, field, el, placeholder); };
+        return el;
+      };
+
+      meta.appendChild(mkMeta('startDate', '開始', '64px'));
+      meta.appendChild(document.createTextNode(' ~ '));
+      meta.appendChild(mkMeta('endDate', '結束', '64px'));
+      const metaSep = document.createElement('span');
+      metaSep.className = 'meta-sep';
+      metaSep.textContent = '|';
+      meta.appendChild(metaSep);
+      meta.appendChild(mkMeta('owner', '負責人', '60px'));
+      row.appendChild(meta);
 
       // Actions
       const acts = document.createElement('div');
@@ -552,6 +600,30 @@ function render() {
 }
 
 // ── Edit ──
+function startMetaEdit(id, field, el, placeholder) {
+  const prev = el.textContent === placeholder ? '' : el.textContent;
+  el.classList.remove('empty');
+  el.innerHTML = '';
+  const inp = document.createElement('input');
+  inp.value = prev;
+  inp.placeholder = placeholder;
+  inp.style.width = el.style.minWidth;
+  el.appendChild(inp);
+  inp.focus();
+  inp.select();
+  const commit = () => {
+    const val = inp.value.trim();
+    tree = updateNodeField(tree, id, field, val);
+    el.textContent = val || placeholder;
+    el.className = 'meta-field' + (val ? '' : ' empty');
+  };
+  inp.addEventListener('blur', commit);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+    if (e.key === 'Escape') { inp.value = prev; inp.blur(); }
+  });
+}
+
 function startEdit(id, titleEl) {
   titleEl.contentEditable = 'true';
   titleEl.focus();
@@ -617,6 +689,7 @@ function deleteNode(id) {
 function injectIds(nodes, level=0) {
   return (nodes||[]).map(n => ({
     id: uid(), title: n.title || '未命名',
+    owner: n.owner || '', startDate: n.startDate || '', endDate: n.endDate || '',
     children: injectIds(n.children, level+1)
   }));
 }
@@ -632,9 +705,9 @@ function exportJSON() {
 
 function exportCSV() {
   const nums = numbering(tree);
-  const rows = [['編號','層級','工作項目']];
+  const rows = [['編號','層級','工作項目','負責人','開始日期','結束日期']];
   const walk = (nodes, level=0) => nodes.forEach(n => {
-    rows.push([nums[n.id], level+1, n.title]);
+    rows.push([nums[n.id], level+1, n.title, n.owner||'', n.startDate||'', n.endDate||'']);
     walk(n.children, level+1);
   });
   walk(tree);
