@@ -29,7 +29,7 @@
     color: var(--text);
     font-family: 'Segoe UI', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif;
     min-height: 100vh;
-    font-size: 14px;
+    font-size: 15px;
   }
 
   /* ── Header ── */
@@ -37,20 +37,20 @@
     position: sticky; top: 0; z-index: 200;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
-    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 14px;
     box-shadow: var(--shadow);
   }
   #header h1 {
-    font-size: 16px; font-weight: 700; letter-spacing: 1px;
+    font-size: 18px; font-weight: 700; letter-spacing: 1px;
     color: var(--accent); flex-shrink: 0;
   }
-  #header .subtitle { font-size: 10px; color: var(--muted2); margin-top: 1px; }
-  #header-actions { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  #header .subtitle { font-size: 11px; color: var(--muted2); margin-top: 2px; }
+  #header-actions { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; align-items: center; }
 
   .btn {
-    padding: 6px 14px; border-radius: 7px; border: 1px solid transparent;
-    cursor: pointer; font-size: 12px; font-weight: 600;
+    padding: 7px 16px; border-radius: 7px; border: 1px solid transparent;
+    cursor: pointer; font-size: 13px; font-weight: 600;
     font-family: inherit; transition: all 0.15s; background: transparent;
     white-space: nowrap;
   }
@@ -64,32 +64,32 @@
   .btn-red:hover { background: #e05a5a22; }
 
   /* ── Main ── */
-  #main { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+  #main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
 
   /* ── Tree ── */
   #tree { min-height: 200px; }
   .empty-state {
     text-align: center; color: var(--muted); margin-top: 60px;
-    font-size: 13px; line-height: 2;
+    font-size: 14px; line-height: 2.2;
   }
 
   /* ── Node ── */
   .node-row {
-    display: flex; align-items: center; gap: 6px;
-    border-radius: 8px; padding: 5px 10px;
+    display: flex; align-items: center; gap: 8px;
+    border-radius: 8px; padding: 7px 12px;
     border-left: 3px solid transparent;
     transition: background 0.12s, border-color 0.12s;
     cursor: grab; user-select: none; position: relative;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
   .node-row:hover { background: #ffffff08; }
   .node-row.drag-over { border-left-color: var(--accent) !important; background: #4e9af115; }
   .node-row.dragging { opacity: 0.35; }
 
   .toggle-btn {
-    width: 18px; height: 18px; border-radius: 4px;
+    width: 20px; height: 20px; border-radius: 4px;
     background: transparent; border: none; color: var(--muted);
-    font-size: 9px; cursor: pointer; flex-shrink: 0;
+    font-size: 10px; cursor: pointer; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.1s;
   }
@@ -97,21 +97,21 @@
   .toggle-btn:hover { color: var(--text); }
 
   .num-badge {
-    font-size: 10px; font-family: 'Courier New', monospace;
-    border-radius: 4px; padding: 1px 5px; flex-shrink: 0;
-    min-width: 28px; text-align: center;
+    font-size: 11px; font-family: 'Courier New', monospace;
+    border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
+    min-width: 34px; text-align: center;
   }
   .level-dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
   }
 
   .node-title {
-    flex: 1; font-size: 13px; color: var(--text);
+    flex: 1; font-size: 15px; color: var(--text);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .node-title[contenteditable="true"] {
     outline: 1px solid var(--accent); border-radius: 4px;
-    padding: 1px 6px; background: var(--surface);
+    padding: 2px 8px; background: var(--surface);
     white-space: nowrap; min-width: 60px;
   }
 
@@ -119,29 +119,29 @@
     display: flex; gap: 4px; align-items: center; flex-shrink: 0;
   }
   .meta-field {
-    font-size: 11px; color: var(--muted2);
+    font-size: 12px; color: var(--muted2);
     border: 1px solid transparent; border-radius: 4px;
-    padding: 2px 7px; cursor: pointer; white-space: nowrap;
-    transition: border-color 0.12s; min-width: 48px; text-align: center;
+    padding: 3px 8px; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.12s; min-width: 52px; text-align: center;
   }
   .meta-field:hover { border-color: var(--border2); }
   .meta-field.empty { color: var(--muted); }
   .meta-field input {
     background: transparent; border: none; outline: none;
-    color: var(--text); font-size: 11px; font-family: inherit;
+    color: var(--text); font-size: 12px; font-family: inherit;
     width: 90px; text-align: center;
   }
-  .meta-sep { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+  .meta-sep { font-size: 11px; color: var(--muted); flex-shrink: 0; }
 
   .node-actions {
-    display: flex; gap: 3px; opacity: 0; transition: opacity 0.15s;
+    display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s;
   }
   .node-row:hover .node-actions { opacity: 1; }
 
   .act-btn {
-    width: 20px; height: 20px; border-radius: 4px; border: none;
+    width: 24px; height: 24px; border-radius: 4px; border: none;
     background: transparent; color: var(--muted);
-    font-size: 11px; cursor: pointer; display: flex;
+    font-size: 12px; cursor: pointer; display: flex;
     align-items: center; justify-content: center;
     transition: all 0.1s; font-family: inherit;
   }
@@ -152,12 +152,12 @@
 
   /* ── Stats ── */
   #stats {
-    margin-top: 28px; padding: 12px 18px;
+    margin-top: 32px; padding: 14px 22px;
     background: var(--surface); border-radius: 10px;
     border: 1px solid var(--border);
-    display: flex; gap: 28px; font-size: 12px; color: var(--muted2);
+    display: flex; gap: 32px; font-size: 13px; color: var(--muted2);
   }
-  #stats .stat-val { color: var(--text); font-weight: 700; font-size: 17px; }
+  #stats .stat-val { color: var(--text); font-weight: 700; font-size: 20px; }
 
   /* ── Toast ── */
   #toast {
@@ -185,8 +185,6 @@
     transition: border-color 0.15s, background 0.15s;
   }
   .tpl-card:hover { border-color: var(--accent); background: #4e9af10a; }
-  .tpl-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-  .tpl-card p  { font-size: 11px; color: var(--muted2); line-height: 1.6; }
 
   /* ── Animations ── */
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px) } to { opacity:1; transform:none } }
@@ -194,6 +192,56 @@
 
   /* ── Toolbar separator ── */
   .sep { width: 1px; background: var(--border); height: 20px; flex-shrink: 0; }
+
+  /* ── Template Panel ─ desktop spacing ── */
+  .tpl-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .tpl-card p  { font-size: 12px; color: var(--muted2); line-height: 1.7; }
+
+  /* ════════════════════════════════════════
+     手機版 (≤ 640px)
+  ════════════════════════════════════════ */
+  @media (max-width: 640px) {
+    body { font-size: 15px; }
+
+    /* Header 折兩列 */
+    #header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+    #header h1 { font-size: 16px; }
+    #header .subtitle { font-size: 10px; }
+    #header-actions { width: 100%; gap: 6px; margin-left: 0; }
+    .sep { display: none; }
+    .btn { padding: 8px 11px; font-size: 12px; }
+
+    /* 模板面板：卡片單欄 */
+    #tpl-panel { padding: 12px 14px; }
+    .tpl-card { min-width: 100%; max-width: 100%; }
+
+    /* 主區塊 */
+    #main { padding: 14px 10px; }
+
+    /* 節點列：meta 欄位換到第二行 */
+    .node-row {
+      flex-wrap: wrap;
+      padding: 9px 10px;
+      min-height: 44px;
+      gap: 6px;
+    }
+    .node-meta {
+      order: 10;
+      flex-basis: 100%;
+      padding: 3px 0 1px 28px;
+      gap: 3px;
+    }
+    /* 動作按鈕在手機上常駐顯示 */
+    .node-actions { opacity: 1; }
+    .act-btn { width: 28px; height: 28px; font-size: 13px; }
+
+    /* Stats */
+    #stats { gap: 18px; padding: 12px 14px; flex-wrap: wrap; }
+    #stats .stat-val { font-size: 18px; }
+
+    /* Toast 撐滿底部 */
+    #toast { left: 14px; right: 14px; bottom: 14px; text-align: center; }
+  }
 
 </style>
 </head>
