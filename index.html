@@ -278,6 +278,23 @@
   .status-in-progress { color: var(--yellow); border-color: var(--yellow); }
   .status-done        { color: var(--green);  border-color: var(--green);  }
 
+  /* ── Notes Row ── */
+  .node-notes-row { display: none; }
+  .node-notes-row.open { display: block; }
+  .notes-textarea {
+    width: 100%; background: #fff;
+    border: 1px solid var(--canvas-border); border-radius: 6px;
+    padding: 6px 10px; font-size: 13px; color: var(--on-canvas);
+    font-family: inherit; resize: vertical; min-height: 52px;
+    outline: none; transition: border-color 0.12s; display: block;
+  }
+  .notes-textarea:focus { border-color: var(--accent); }
+  .act-btn.notes.has-notes { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .notes-textarea { font-size: 14px; }
+  }
+
 </style>
 </head>
 <body>
@@ -654,6 +671,12 @@ function render() {
 
       acts.appendChild(mkBtn('＋','add','新增同層', () => addSibling(node.id)));
       if (node.level < 4) acts.appendChild(mkBtn('⤵','child','新增子項', () => addChildNode(node.id)));
+      const hasNotes = !!(node.notes && node.notes.trim());
+      acts.appendChild(mkBtn('💬', 'notes' + (hasNotes ? ' has-notes' : ''), '備註', () => {
+        expandedNotes[node.id] = !expandedNotes[node.id];
+        const nr = document.querySelector(`.node-notes-row[data-id="${node.id}"]`);
+        if (nr) nr.classList.toggle('open', !!expandedNotes[node.id]);
+      }));
       acts.appendChild(mkBtn('✕','del','刪除', () => deleteNode(node.id)));
       row.appendChild(acts);
 
@@ -685,6 +708,26 @@ function render() {
       });
 
       treeEl.appendChild(row);
+
+      // Notes row（備註展開列，每次 render 重建，展開狀態由 expandedNotes 決定）
+      const notesRow = document.createElement('div');
+      notesRow.className = 'node-notes-row' + (expandedNotes[node.id] ? ' open' : '');
+      notesRow.dataset.id = node.id;
+      notesRow.style.paddingLeft = (24 + node.level * 26 + 28) + 'px';
+      notesRow.style.paddingRight = '12px';
+      notesRow.style.paddingBottom = '6px';
+      const ta = document.createElement('textarea');
+      ta.className = 'notes-textarea';
+      ta.placeholder = '新增備註…';
+      ta.value = node.notes || '';
+      ta.rows = 2;
+      ta.addEventListener('blur', () => {
+        tree = updateNodeField(tree, node.id, 'notes', ta.value.trim());
+      });
+      ta.addEventListener('click', e => e.stopPropagation());
+      ta.addEventListener('dragstart', e => e.stopPropagation());
+      notesRow.appendChild(ta);
+      treeEl.appendChild(notesRow);
     });
   }
 
