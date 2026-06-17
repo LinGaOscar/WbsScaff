@@ -460,6 +460,11 @@ let tree = [
 let collapsed = {};
 let draggingId = null;
 let overId = null;
+let expandedNotes = {};   // { [nodeId]: boolean }
+let dropPosition = null;  // 'before' | 'child'
+
+const STATUS_CYCLE = { 'not-started': 'in-progress', 'in-progress': 'done', 'done': 'not-started' };
+const STATUS_LABEL = { 'not-started': '未開始', 'in-progress': '進行中', 'done': '完成' };
 
 function uid() { return Math.random().toString(36).slice(2,9); }
 
@@ -548,7 +553,7 @@ function render() {
   const treeEl = document.getElementById('tree');
 
   if (all.length === 0) {
-    treeEl.innerHTML = '<div class="empty-state">尚無工作項目<br>點擊「新增群組」或使用 AI 生成</div>';
+    treeEl.innerHTML = '<div class="empty-state">尚無工作項目<br>點擊「新增群組」或套用模板開始</div>';
   } else {
     treeEl.innerHTML = '';
     vis.forEach(node => {
@@ -775,6 +780,7 @@ function applyTemplate(key) {
   if (!confirm('套用模板將取代現有 WBS，確定繼續？')) return;
   tree = injectIds(TEMPLATES[key]);
   collapsed = {};
+  expandedNotes = {};
   document.getElementById('tpl-panel').classList.remove('open');
   render();
   showToast('模板已套用 ✓');
@@ -807,6 +813,8 @@ function injectIds(nodes, level=0) {
   return (nodes||[]).map(n => ({
     id: uid(), title: n.title || '未命名',
     owner: n.owner || '', startDate: n.startDate || '', endDate: n.endDate || '',
+    status: n.status || 'not-started',
+    notes: n.notes || '',
     children: injectIds(n.children, level+1)
   }));
 }
@@ -848,8 +856,9 @@ function handleImport(e) {
   reader.onload = evt => {
     try {
       const data = JSON.parse(evt.target.result);
-      tree = injectIds(data); // re-assign ids for safety
+      tree = injectIds(data);
       collapsed = {};
+      expandedNotes = {};
       render();
       showToast('JSON 已匯入 ✓');
     } catch {
