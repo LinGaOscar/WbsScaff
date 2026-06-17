@@ -951,9 +951,9 @@ function exportJSON() {
 
 function exportCSV() {
   const nums = numbering(tree);
-  const rows = [['編號','層級','工作項目','負責人','開始日期','結束日期']];
+  const rows = [['編號','層級','工作項目','負責人','開始日期','結束日期','狀態']];
   const walk = (nodes, level=0) => nodes.forEach(n => {
-    rows.push([nums[n.id], level+1, n.title, n.owner||'', n.startDate||'', n.endDate||'']);
+    rows.push([nums[n.id], level+1, n.title, n.owner||'', n.startDate||'', n.endDate||'', STATUS_LABEL[n.status||'not-started']]);
     walk(n.children, level+1);
   });
   walk(tree);
