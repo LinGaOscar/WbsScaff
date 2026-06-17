@@ -773,7 +773,10 @@ function render() {
       ta.value = node.notes || '';
       ta.rows = 2;
       ta.addEventListener('blur', () => {
-        tree = updateNodeField(tree, node.id, 'notes', ta.value.trim());
+        const val = ta.value.trim();
+        tree = updateNodeField(tree, node.id, 'notes', val);
+        const btn = ta.closest('.node-notes-row')?.previousElementSibling?.querySelector('.act-btn.notes');
+        if (btn) btn.className = `act-btn notes${val ? ' has-notes' : ''}`;
       });
       ta.addEventListener('click', e => e.stopPropagation());
       ta.addEventListener('dragstart', e => e.stopPropagation());
@@ -908,17 +911,17 @@ function applyTemplate(key) {
 
 // ── CRUD ──
 function addRoot() {
-  tree.push({ id: uid(), title: '新工作群組', children: [] });
+  tree.push({ id: uid(), title: '新工作群組', children: [], status: 'not-started', notes: '' });
   render();
 }
 
 function addSibling(id) {
-  tree = insertAfter(tree, id, { id: uid(), title: '新工作項目', children: [] });
+  tree = insertAfter(tree, id, { id: uid(), title: '新工作項目', children: [], status: 'not-started', notes: '' });
   render();
 }
 
 function addChildNode(parentId) {
-  tree = addChildTo(tree, parentId, { id: uid(), title: '新子項目', children: [] });
+  tree = addChildTo(tree, parentId, { id: uid(), title: '新子項目', children: [], status: 'not-started', notes: '' });
   collapsed[parentId] = false;
   render();
 }
