@@ -690,7 +690,12 @@ function render() {
       const sBadge = document.createElement('span');
       sBadge.className = `status-badge status-${status}`;
       sBadge.textContent = STATUS_LABEL[status];
-      sBadge.onclick = e => { e.stopPropagation(); cycleStatus(node.id, status); };
+      if (node.children.length) {
+        sBadge.style.cursor = 'default';
+        sBadge.style.opacity = '0.6';
+      } else {
+        sBadge.onclick = e => { e.stopPropagation(); cycleStatus(node.id, status); };
+      }
       row.appendChild(sBadge);
 
       // Title
@@ -841,8 +846,21 @@ function render() {
 }
 
 // ── Status ──
+function syncParentStatus(nodes) {
+  nodes.forEach(n => {
+    if (!n.children.length) return;
+    syncParentStatus(n.children);
+    const allDone    = n.children.every(c => (c.status || 'not-started') === 'done');
+    const anyStarted = n.children.some(c  => (c.status || 'not-started') !== 'not-started');
+    n.status = allDone ? 'done' : anyStarted ? 'in-progress' : 'not-started';
+  });
+}
+
 function cycleStatus(id, current) {
+  const node = findNode(tree, id);
+  if (node && node.children.length) return; // 父項狀態由子項自動決定
   tree = updateNodeField(tree, id, 'status', STATUS_CYCLE[current] || 'not-started');
+  syncParentStatus(tree);
   render();
 }
 
@@ -986,6 +1004,7 @@ function addSibling(id) {
 function addChildNode(parentId) {
   tree = addChildTo(tree, parentId, { id: uid(), title: '新子項目', children: [], status: 'not-started', notes: '' });
   collapsed[parentId] = false;
+  syncParentStatus(tree);
   render();
 }
 
@@ -996,6 +1015,7 @@ function deleteNode(id) {
   const [nt] = removeNode(tree, id);
   tree = nt;
   delete expandedNotes[id];
+  syncParentStatus(tree);
   render();
 }
 
