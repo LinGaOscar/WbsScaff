@@ -309,6 +309,9 @@
   <div id="header-actions">
     <button class="btn btn-accent" onclick="toggleTpl()">📋 模板</button>
     <div class="sep"></div>
+    <button class="btn btn-muted" onclick="expandAll()">⊞ 全展開</button>
+    <button class="btn btn-muted" onclick="collapseAll()">⊟ 全收合</button>
+    <div class="sep"></div>
     <button class="btn btn-green" onclick="addRoot()">＋ 新增群組</button>
     <div class="sep"></div>
     <button class="btn btn-muted" onclick="exportCSV()">⬇ CSV/Excel</button>
@@ -907,6 +910,17 @@ function applyTemplate(key) {
   document.getElementById('tpl-panel').classList.remove('open');
   render();
   showToast('模板已套用 ✓');
+}
+
+// ── Expand / Collapse All ──
+function expandAll() {
+  collapsed = {};
+  render();
+}
+
+function collapseAll() {
+  allFlat(tree).forEach(n => { if (n.children.length) collapsed[n.id] = true; });
+  render();
 }
 
 // ── CRUD ──
