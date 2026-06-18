@@ -296,6 +296,26 @@
     .notes-textarea { font-size: 14px; }
   }
 
+  /* ── Filter ── */
+  #filter-input {
+    padding: 6px 10px; border-radius: 7px;
+    border: 1px solid var(--border2); background: var(--surface);
+    color: var(--text); font-size: 13px; font-family: inherit;
+    width: 160px; outline: none; transition: border-color 0.15s;
+  }
+  #filter-input:focus { border-color: var(--accent); }
+  #filter-input::placeholder { color: var(--muted); }
+  #filter-status {
+    padding: 6px 8px; border-radius: 7px;
+    border: 1px solid var(--border2); background: var(--surface);
+    color: var(--text); font-size: 13px; font-family: inherit;
+    cursor: pointer; outline: none;
+  }
+
+  @media (max-width: 640px) {
+    #filter-input  { width: 100%; }
+    #filter-status { width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -307,6 +327,15 @@
     <div class="subtitle">工作分解結構 · 離線版</div>
   </div>
   <div id="header-actions">
+    <input id="filter-input" type="text" placeholder="🔍 搜尋節點…"
+      oninput="filterText=this.value.toLowerCase();render()">
+    <select id="filter-status" onchange="filterStatus=this.value;render()">
+      <option value="all">全部狀態</option>
+      <option value="not-started">未開始</option>
+      <option value="in-progress">進行中</option>
+      <option value="done">完成</option>
+    </select>
+    <div class="sep"></div>
     <button class="btn btn-accent" onclick="toggleTpl()">📋 模板</button>
     <div class="sep"></div>
     <button class="btn btn-muted" onclick="expandAll()">⊞ 全展開</button>
@@ -496,6 +525,8 @@ let draggingId = null;
 let overId = null;
 let expandedNotes = {};   // { [nodeId]: boolean }
 let dropPosition = null;  // 'before' | 'child'
+let filterText   = '';    // 搜尋關鍵字（已 toLowerCase）
+let filterStatus = 'all'; // 'all' | 'not-started' | 'in-progress' | 'done'
 
 const STATUS_CYCLE = { 'not-started': 'in-progress', 'in-progress': 'done', 'done': 'not-started' };
 const STATUS_LABEL = { 'not-started': '未開始', 'in-progress': '進行中', 'done': '完成' };
@@ -626,6 +657,10 @@ function render() {
       row.style.paddingLeft = (24 + node.level * 26) + 'px';
       row.style.borderLeftColor = 'transparent';
       row.draggable = true;
+      // Filter
+      const textMatch   = !filterText || node.title.toLowerCase().includes(filterText);
+      const statusMatch = filterStatus === 'all' || (node.status || 'not-started') === filterStatus;
+      const isMatch     = textMatch && statusMatch;
 
       // Toggle
       const tog = document.createElement('button');
@@ -786,6 +821,11 @@ function render() {
       ta.addEventListener('dragstart', e => e.stopPropagation());
       notesRow.appendChild(ta);
       treeEl.appendChild(notesRow);
+      // Apply filter dimming
+      row.style.opacity       = isMatch ? '1' : '0.25';
+      row.style.pointerEvents = isMatch ? ''  : 'none';
+      notesRow.style.opacity       = isMatch ? '1' : '0.25';
+      notesRow.style.pointerEvents = isMatch ? ''  : 'none';
     });
   }
 
@@ -911,6 +951,11 @@ function applyTemplate(key) {
   tree = injectIds(TEMPLATES[key]);
   collapsed = {};
   expandedNotes = {};
+  filterText = ''; filterStatus = 'all';
+  const fi = document.getElementById('filter-input');
+  const fs = document.getElementById('filter-status');
+  if (fi) fi.value = '';
+  if (fs) fs.value = 'all';
   document.getElementById('tpl-panel').classList.remove('open');
   render();
   showToast('模板已套用 ✓');
@@ -1001,6 +1046,11 @@ function handleImport(e) {
       tree = injectIds(data);
       collapsed = {};
       expandedNotes = {};
+      filterText = ''; filterStatus = 'all';
+      const fi = document.getElementById('filter-input');
+      const fs = document.getElementById('filter-status');
+      if (fi) fi.value = '';
+      if (fs) fs.value = 'all';
       render();
       showToast('JSON 已匯入 ✓');
     } catch {
