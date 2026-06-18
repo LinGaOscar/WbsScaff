@@ -341,7 +341,7 @@
     <button class="btn btn-muted" onclick="expandAll()">⊞ 全展開</button>
     <button class="btn btn-muted" onclick="collapseAll()">⊟ 全收合</button>
     <div class="sep"></div>
-    <button class="btn btn-green" onclick="addRoot()">＋ 新增群組</button>
+    <button class="btn btn-green" onclick="addRoot()">＋ 新增大項</button>
     <div class="sep"></div>
     <button class="btn btn-muted" onclick="exportCSV()">⬇ CSV</button>
     <button class="btn btn-muted" onclick="exportXLSX()">⬇ XLSX</button>
@@ -673,7 +673,7 @@ function render() {
   const treeEl = document.getElementById('tree');
 
   if (all.length === 0) {
-    treeEl.innerHTML = '<div class="empty-state">尚無工作項目<br>點擊「新增群組」或套用模板開始</div>';
+    treeEl.innerHTML = '<div class="empty-state">尚無工作項目<br>點擊「新增大項」或套用模板開始</div>';
   } else {
     treeEl.innerHTML = '';
     vis.forEach(node => {
@@ -764,7 +764,6 @@ function render() {
         return b;
       };
 
-      acts.appendChild(mkBtn('＋','add','新增同層', () => addSibling(node.id)));
       if (node.level < 4) acts.appendChild(mkBtn('⤵','child','新增子項', () => addChildNode(node.id)));
       const hasNotes = !!(node.notes && node.notes.trim());
       acts.appendChild(mkBtn('💬', 'notes' + (hasNotes ? ' has-notes' : ''), '備註', () => {
