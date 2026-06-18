@@ -372,7 +372,7 @@
   </div>
   <div class="tpl-card" onclick="applyTemplate('project')">
     <h3>🏗 專案開發</h3>
-    <p>SIT：環境建置 → 功能 / 整合測試 → 黑白箱 / 第三方 → IT 測試報告<br>PROD：環境建置 → 上線準備 → 系統上線</p>
+    <p>SIT：環境建置 → 功能 / 整合測試 → IT 測試報告<br>PROD：環境建置 → 黑白箱 / 第三方 → 上線準備 → 系統上線</p>
   </div>
 </div>
 
@@ -468,11 +468,6 @@ const TEMPLATES = {
         { title: '功能測試', children: [] },
         { title: '整合測試', children: [] },
       ]},
-      { title: '測試驗證', children: [
-        { title: '黑箱測試', children: [] },
-        { title: '白箱測試', children: [] },
-        { title: '第三方測試', children: [] },
-      ]},
       { title: 'IT 測試報告', children: [] },
     ]},
     { title: 'PROD 階段', children: [
@@ -481,6 +476,11 @@ const TEMPLATES = {
         { title: '防火牆設定', children: [] },
         { title: '連線測試', children: [] },
         { title: '執行環境 / 驅動安裝', children: [] },
+      ]},
+      { title: '測試驗證', children: [
+        { title: '黑箱測試', children: [] },
+        { title: '白箱測試', children: [] },
+        { title: '第三方測試', children: [] },
       ]},
       { title: '上線準備', children: [
         { title: 'USER 測試報告', children: [] },
