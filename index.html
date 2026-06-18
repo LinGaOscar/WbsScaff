@@ -669,7 +669,7 @@ function subtreeDepth(node) {
 function render() {
   const nums = numbering(tree);
   const all = allFlat(tree);
-  const vis = flatten(tree);
+  const vis = (filterText || filterStatus !== 'all') ? allFlat(tree) : flatten(tree);
   const treeEl = document.getElementById('tree');
 
   if (all.length === 0) {
