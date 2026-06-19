@@ -1,0 +1,82 @@
+<h2>模板選擇介面：觸發方式</h2>
+<p class="subtitle">點擊「選擇模板」按鈕後，要用哪種方式呈現模板清單？</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="modal" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:16px;font-family:monospace;font-size:11px;">
+      <div style="background:#161b22;border:1px solid #2a3040;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span style="color:#4e9af1;font-weight:700">⬡ WBS Builder</span>
+        <span style="margin-left:auto;display:flex;gap:6px;">
+          <span style="background:transparent;border:1px solid #4e9af155;color:#4e9af1;border-radius:5px;padding:3px 10px;font-size:10px;">📋 模板</span>
+          <span style="background:transparent;border:1px solid #3fb68e55;color:#3fb68e;border-radius:5px;padding:3px 10px;font-size:10px;">＋ 新增群組</span>
+        </span>
+      </div>
+      <div style="position:relative;">
+        <div style="filter:blur(1px);opacity:0.4;background:#161b22;border:1px solid #2a3040;border-radius:6px;padding:8px 12px;font-size:10px;color:#5a6580;">WBS 節點列表…</div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <div style="background:#1c2130;border:1px solid #333d55;border-radius:10px;padding:14px 18px;min-width:200px;box-shadow:0 8px 32px #00000088;">
+            <div style="color:#e2e8f8;font-size:11px;font-weight:700;margin-bottom:10px;">選擇模板</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="background:#4e9af118;border:1px solid #4e9af155;border-radius:6px;padding:6px 8px;color:#4e9af1;font-size:10px;text-align:center;">📋 新功能</div>
+              <div style="background:#3fb68e18;border:1px solid #3fb68e55;border-radius:6px;padding:6px 8px;color:#3fb68e;font-size:10px;text-align:center;">🚀 新系統</div>
+              <div style="background:#d4a84318;border:1px solid #d4a84355;border-radius:6px;padding:6px 8px;color:#d4a843;font-size:10px;text-align:center;">🏗 專案</div>
+              <div style="background:#9b72cf18;border:1px solid #9b72cf55;border-radius:6px;padding:6px 8px;color:#9b72cf;font-size:10px;text-align:center;">+ 更多…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Modal 彈出</h3>
+      <p>背景淡出，模板卡片居中彈出。<br>聚焦感強，適合選項多時。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="panel" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:16px;font-family:monospace;font-size:11px;">
+      <div style="background:#161b22;border:1px solid #2a3040;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="color:#4e9af1;font-weight:700">⬡ WBS Builder</span>
+        <span style="margin-left:auto;display:flex;gap:6px;">
+          <span style="background:#4e9af122;border:1px solid #4e9af155;color:#4e9af1;border-radius:5px;padding:3px 10px;font-size:10px;">📋 模板 ▼</span>
+          <span style="background:transparent;border:1px solid #3fb68e55;color:#3fb68e;border-radius:5px;padding:3px 10px;font-size:10px;">＋ 新增群組</span>
+        </span>
+      </div>
+      <div style="background:#1c2130;border-bottom:1px solid #2a3040;padding:10px 16px;display:flex;gap:8px;margin-bottom:6px;">
+        <div style="background:#4e9af118;border:1px solid #4e9af155;border-radius:6px;padding:6px 12px;color:#4e9af1;font-size:10px;">📋 新功能開發</div>
+        <div style="background:#3fb68e18;border:1px solid #3fb68e55;border-radius:6px;padding:6px 12px;color:#3fb68e;font-size:10px;">🚀 新系統建置</div>
+        <div style="background:#d4a84318;border:1px solid #d4a84355;border-radius:6px;padding:6px 12px;color:#d4a843;font-size:10px;">🏗 專案交付</div>
+      </div>
+      <div style="background:#161b22;border:1px solid #2a3040;border-radius:6px;padding:8px 12px;font-size:10px;color:#5a6580;">WBS 節點列表…</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Header 下拉面板</h3>
+      <p>類似 AI 面板的滑下動畫，模板橫排顯示。<br>與現有 UI 風格一致，不離開當前畫面。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="dropdown" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0d1117;padding:16px;font-family:monospace;font-size:11px;">
+      <div style="background:#161b22;border:1px solid #2a3040;border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative;">
+        <span style="color:#4e9af1;font-weight:700">⬡ WBS Builder</span>
+        <span style="margin-left:auto;display:flex;gap:6px;position:relative;">
+          <span style="background:#4e9af122;border:1px solid #4e9af155;color:#4e9af1;border-radius:5px;padding:3px 10px;font-size:10px;position:relative;">
+            📋 模板 ▾
+            <div style="position:absolute;top:100%;right:0;margin-top:4px;background:#1c2130;border:1px solid #333d55;border-radius:8px;padding:6px;min-width:160px;z-index:10;box-shadow:0 6px 24px #000000aa;">
+              <div style="color:#e2e8f8;padding:5px 8px;border-radius:4px;font-size:10px;cursor:pointer;background:#4e9af111;">📋 新功能開發</div>
+              <div style="color:#e2e8f8;padding:5px 8px;border-radius:4px;font-size:10px;cursor:pointer;margin-top:2px;">🚀 新系統建置</div>
+              <div style="color:#e2e8f8;padding:5px 8px;border-radius:4px;font-size:10px;cursor:pointer;margin-top:2px;">🏗 專案交付</div>
+            </div>
+          </span>
+          <span style="background:transparent;border:1px solid #3fb68e55;color:#3fb68e;border-radius:5px;padding:3px 10px;font-size:10px;">＋ 新增群組</span>
+        </span>
+      </div>
+      <div style="background:#161b22;border:1px solid #2a3040;border-radius:6px;padding:8px 12px;font-size:10px;color:#5a6580;">WBS 節點列表…</div>
+    </div>
+    <div class="card-body">
+      <h3>C — 下拉選單</h3>
+      <p>點擊後展開緊湊的 dropdown。<br>最輕量，但無法顯示模板描述。</p>
+    </div>
+  </div>
+
+</div>

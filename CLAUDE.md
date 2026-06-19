@@ -84,10 +84,15 @@ let filterStatus = 'all';   // 'all' | 'not-started' | 'in-progress' | 'done'
 | `expandAll()` | 展開所有節點（`collapsed = {}`） |
 | `collapseAll()` | 收合所有有子節點的節點 |
 | `exportXLSX()` | 匯出 XLSX（需要 SheetJS inline bundle） |
+| `syncParentStatus(nodes)` | 由底往上遞迴計算父項狀態：allDone→done、anyStarted→in-progress、否則 not-started；在任何改變子項狀態的操作後呼叫 |
 
 **拖曳排序**：`dragstart/drop` 事件觸發 `removeNode` + `insertBefore`/`addChildTo`。`dragover` 以 `getBoundingClientRect()` 判斷游標位置（上半 = 同層插前、下半 = 成子項），支援跨層移動；層級超過 5 層或拖曳到自身後代時阻擋。
 
-**WBS 模板**：`TEMPLATES` 物件（feature／system／project 三種）定義純資料樹（不含 id），`applyTemplate(key)` 以 `injectIds()` 補 id 後整棵取代 `tree`，確認框防止誤觸。新增模板請直接擴充 `TEMPLATES`，並在 `#tpl-panel` 加對應 `.tpl-card`。
+**WBS 模板**：`TEMPLATES` 物件（`feature`「新功能開發」／`project`「專案開發」兩種）定義純資料樹（不含 id），`applyTemplate(key)` 以 `injectIds()` 補 id 後整棵取代 `tree`，確認框防止誤觸，並重置 `filterText`/`filterStatus`。每個模板含 SIT 階段（環境建置、測試執行、IT 測試報告）與 PROD 階段（環境建置、上線準備、系統上線）；`project` 多一個「測試驗證」（黑箱/白箱/第三方）在 PROD。新增模板請直接擴充 `TEMPLATES`，並在 `#tpl-panel` 加對應 `.tpl-card`。
+
+**Header 結構**：分兩列——`#header-row1` 含搜尋輸入、狀態篩選、模板、全展開/收合、新增大項；`#header-row2` 含 CSV、XLSX、JSON 匯出與匯入按鈕。
+
+**父項狀態自動計算**：有子節點的父項狀態**不可手動更改**（`cycleStatus` 直接 return），由 `syncParentStatus(tree)` 自動推算。凡改變樹狀結構或子項狀態的操作（`cycleStatus`、`deleteNode`、`addChildNode`）執行後都須呼叫一次 `syncParentStatus`。
 
 > ⚠️ 注意：早期版本曾有「AI 生成」功能（直接呼叫 Anthropic API），已於 commit `32b4194` 移除，目前程式碼**沒有**任何 AI 相關邏輯。`建置計畫書.md` 中提及 AI 生成的段落已過時，請勿依此重新引入。
 
@@ -97,14 +102,19 @@ let filterStatus = 'all';   // 'all' | 'not-started' | 'in-progress' | 'done'
 
 **RWD**：`@media (max-width: 640px)` 統一管理手機版樣式（Header 換行、meta 欄位換行至節點第二行、動作按鈕常駐顯示）。新增節點列相關樣式時，桌面與手機版規則需同步檢查。
 
-## 第 2 階段功能（已完成）
+## 已完成功能
 
-- 跨層拖曳（移動節點到不同父節點）✓
-- 節點狀態標籤（未開始 / 進行中 / 完成，點擊循環切換）✓
-- 節點備註欄位（展開列，blur 儲存）✓
-
-## 第 3 階段
-
+- 跨層拖曳 ✓
+- 節點狀態標籤（點擊循環；父項狀態由子項自動推算，不可手動更改）✓
+- 節點備註欄位 ✓
+- 全展開 / 全收合 ✓
+- 狀態統計（Stats 列完成進度）✓
+- 關鍵字搜尋 + 狀態篩選（含已收合子樹）✓
 - XLSX 匯出（SheetJS inline bundle）✓
-- 列印 PDF 樣式（選用）
-- 甘特圖 SVG 預覽（選用）
+- Header 雙列結構（操作列 / IO 列）✓
+- 刪除確認告警視窗 ✓
+
+## 待辦（選用）
+
+- 列印 PDF 樣式
+- 甘特圖 SVG 預覽
